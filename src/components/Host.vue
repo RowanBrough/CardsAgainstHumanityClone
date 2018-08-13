@@ -23,11 +23,11 @@
       </v-flex>
 
       <v-flex xs12 align-center>
-        <PlayerJoin></PlayerJoin>
+        <PlayerJoin ref="playerJoin"></PlayerJoin>
       </v-flex>
 
       <v-flex xs12>
-        <v-btn color="amber" dark block large disabled to="host">Start Game</v-btn>
+        <v-btn color="amber" dark block large :disabled="startDisabled" v-on:click.prevent="startGame">Start Game</v-btn>
       </v-flex>
 
     </v-layout>
@@ -40,17 +40,37 @@
     name: 'host',
     data () {
       return {
-        code: '',
+        startDisabled: true,
+        room:null
       }
     },
     computed: {
       secretCode: function() {
-        return this.code.substring(0, 4) + " " + this.code.substring(4, this.code.length);
+        if(this.room) {
+          return this.room.secretCode.substring(0, 4) + " " + this.room.secretCode.substring(4, this.room.secretCode.length);
+        }
+        else {
+          return '';
+        }
       }
     },
     sockets:{
-      HOST_RESPONSE: function(secretCode) {
-        this.code = secretCode;
+      HOST_RESPONSE: function(room) {
+        console.log("this.room: ", room);
+        this.room = room;
+        var joinParams = {
+          secretCode: this.room.secretCode,
+          host: true,
+          name: localStorage.getItem('userName'),
+          image: ''//localStorage.getItem('userImage')
+        }
+        console.log("sending join request: ", joinParams);
+        this.$socket.emit('JOIN_REQUEST', joinParams);
+      },
+      PLAYER_JOINED: function(playerList) {
+        if(playerList.length >= 3) {
+          startDisabled = false;
+        }
       }
     },
     components: { PlayerJoin },
@@ -61,6 +81,11 @@
     },
     mounted: function() {
       this.$socket.emit('HOST_REQUEST');
+    },
+    methods: {
+      startGame: function () {
+        this.$socket.emit('START_GAME_REQUEST');
+      }
     }
   }
 </script>

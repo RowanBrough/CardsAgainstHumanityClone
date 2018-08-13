@@ -56,8 +56,9 @@
         else {
           var joinParams = {
             secretCode: this.secretCode,
+            host: false,
             name: localStorage.getItem('userName'),
-            image: localStorage.getItem('userImage')
+            image: ''//localStorage.getItem('userImage')
           }
           console.log("sending join request: ", joinParams);
           this.$socket.emit('JOIN_REQUEST', joinParams);
