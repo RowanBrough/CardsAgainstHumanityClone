@@ -1,7 +1,7 @@
 <template>
 
   <v-list>
-     <v-list-tile v-for="player in playerList" :key="player.name" avatar>
+     <v-list-tile v-for="player in playerList" :key="player.id" avatar>
        <v-list-tile-action>
          <v-icon v-if="player.host" color="amber">gavel</v-icon>
        </v-list-tile-action>
@@ -28,6 +28,10 @@
     },
     sockets: {
       PLAYER_JOINED(playerList) {
+        console.log("PLAYER_JOINED: ", playerList);
+        this.playerList = playerList;
+      },
+      PLAYER_REMOVED(playerList) {
         console.log("PLAYER_JOINED: ", playerList);
         this.playerList = playerList;
       },

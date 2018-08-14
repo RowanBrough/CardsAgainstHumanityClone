@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Lobby from '@/components/Lobby'
-import Host from '@/components/Host'
-import Join from '@/components/Join'
-import User from '@/components/User'
+
+import Game from '@/views/Game'
+import Host from '@/views/Host'
+import Join from '@/views/Join'
+import Lobby from '@/views/Lobby'
+import User from '@/views/User'
 
 Vue.use(Router)
 
@@ -30,6 +32,12 @@ export default new Router({
       path: '/User',
       name: 'User',
       component: User
+    },
+    {
+      path: '/Game',
+      name: 'Game',
+      component: Game,
+      props: true
     }
   ]
 })
