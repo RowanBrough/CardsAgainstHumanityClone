@@ -28,11 +28,9 @@
     },
     sockets: {
       PLAYER_JOINED(playerList) {
-        console.log("PLAYER_JOINED: ", playerList);
         this.playerList = playerList;
       },
       PLAYER_REMOVED(playerList) {
-        console.log("PLAYER_JOINED: ", playerList);
         this.playerList = playerList;
       },
     }

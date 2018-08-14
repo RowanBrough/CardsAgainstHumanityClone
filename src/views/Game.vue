@@ -2,12 +2,14 @@
   <v-container>
     <v-layout align-center justify-center row wrap fill-height>
 
-      <v-flex xs12 align-center>
-        
-        <keep-alive>
-         <component v-bind:is="view"></component>
-        </keep-alive>
-
+      <v-flex xs12 align-center v-if="isJudge">
+        <p>
+          You are the judge, now is your time to harshly judge your friends sense of humor.
+          Select the card you find funniest, the player who came up with that combination will win the round.
+        </p>
+      </v-flex>
+      <v-flex xs12 align-center v-else>
+        You are not a judge
       </v-flex>
 
     </v-layout>
@@ -15,30 +17,58 @@
 </template>
 
 <script>
-  import ChooseCard from '@/components/Game_ChooseCard.vue'
-  import CountDown from '@/components/Game_CountDown.vue'
-  import Judge from '@/components/Game_Judge.vue'
-  import Winner from '@/components/Game_Winner.vue'
-
   export default {
     name: 'Game',
-    components: { CountDown, ChooseCard, Judge, Winner },
-    props: ["room"],
     data () {
       return {
-        view: 'CountDown'
+        view: '',
+        room: null,
+        socketId:null,
+        isJudge:null,
+        blackCard:null,
+        points:null
+      }
+    },
+    sockets: {
+      GET_SOCKET_ID_RESPONSE: function(id) {
+        this.socketId = id;
       }
     },
     created: function() {
       this.$parent.nav.hidden = true;
     },
-    sockets: {
-      JOIN_RESPONSE: function() {
-        
+    mounted: function() {
+      this.room = JSON.parse(localStorage.getItem('roomData'));
+      this.$socket.emit('GET_SOCKET_ID');
+    },
+    methods: {
+      init: function () {
+        var response = this.playerExists(this.room.playerList)
+        if(response.success) {
+          this.isJudge = response.player.judge;
+        }
+        this.isJudge = false;
+      },
+
+      playerExists: function(array,) {
+        for (var i=0; i < array.length; i++) {
+          if (array[i].id === this.socketId) {
+              return {
+                  success:true,
+                  index: i,
+                  player: array[i]
+              };
+          }
+        }
+        return {
+          success:false
+        }
       }
     },
-    mounted () {
-      this.$socket.emit('START_GAME_REQUEST', this.room);
+    watch: {
+      socketId: function () {
+        this.init();
+      },
     }
   }
 </script>

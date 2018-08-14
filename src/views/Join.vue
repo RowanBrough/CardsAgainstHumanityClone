@@ -56,8 +56,8 @@
           this.joined = false;
         }
       },
-      START_GAME_RESPONSE(room) {
-        this.$parent.$router.push({ path: '/Game', params: { room: room }});
+      START_RESPONSE(roomData) {
+        this.$parent.$router.push({ path: '/Game', params: { room: roomData }});
       }
     },
     methods: {

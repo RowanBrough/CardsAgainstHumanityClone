@@ -27,7 +27,7 @@
       </v-flex>
 
       <v-flex xs12>
-        <v-btn color="amber" dark block large :disabled="startDisabled" v-on:click.prevent="startGame">Start Game</v-btn>
+        <v-btn color="amber" dark block large :disabled="startDisabled" @click="startGame(event)">Start Game</v-btn>
       </v-flex>
 
     </v-layout>
@@ -42,7 +42,7 @@
     data () {
       return {
         startDisabled: true,
-        room:null
+        room: null
       }
     },
     computed: {
@@ -57,7 +57,6 @@
     },
     sockets:{
       HOST_RESPONSE: function(room) {
-        console.log("this.room: ", room);
         this.room = room;
         var joinParams = {
           secretCode: this.room.secretCode,
@@ -65,24 +64,21 @@
           name: localStorage.getItem('userName'),
           image: ''//localStorage.getItem('userImage')
         }
-        console.log("sending join request: ", joinParams);
         this.$socket.emit('JOIN_REQUEST', joinParams);
       },
       PLAYER_JOINED(playerList) {
-        console.log("PLAYER_JOINED: ", playerList.length, playerList);
-        if(playerList.length >= 3) {
+        if( (playerList.length >= 3) && (this.room) ) {
           this.startDisabled = false;
         }
       },
       PLAYER_REMOVED(playerList) {
-        console.log("PLAYER_REMOVED: ", playerList.length, playerList);
-        if(playerList.length >= 3) {
+        if( (playerList.length >= 3) && (this.room) ) {
           this.startDisabled = false;
         }
       },
-      START_GAME_RESPONSE(room) {
-        console.log("room: ", room);
-        this.$parent.$router.push({ path: '/Game', params: { room: room }});
+      START_RESPONSE(roomData) {
+        localStorage.setItem("roomData", JSON.stringify(roomData));
+        this.$parent.$router.push({ path: '/Game'});
       }
     },
     created: function() {
@@ -95,7 +91,8 @@
     },
     methods: {
       startGame: function () {
-        this.$socket.emit('START_GAME_REQUEST', this.room);
+        this.$socket.emit('START_REQUEST', this.room.secretCode);
+        return false;
       }
     }
   }

@@ -1,5 +1,6 @@
 <template>
   <v-layout align-start justify-start row v-if="!hidden">
+    {{ hidden }}
     <v-btn fab small color="amber" :to="(dialog?'':to)" v-if="img.length == 0">
       <v-icon dark>chevron_left</v-icon>
     </v-btn>

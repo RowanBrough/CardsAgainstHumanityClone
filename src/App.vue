@@ -18,9 +18,15 @@
     data () {
       return {
         nav: {
-          to: '',
+          hidden: false,
+          to: 'Lobby',
           img: '',
-          title: ''
+          title: '',
+          dialog: false,
+          dialogHeader: 'Are you sure?',
+          dialogText: 'leaving this page will kick you from the game.',
+          dialogBtnConfirm: 'Leave Page',
+          dialogBtnCancel:'Stay',
         }
       }
     }
